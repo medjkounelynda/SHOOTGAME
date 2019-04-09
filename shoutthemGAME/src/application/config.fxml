@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.control.Button?>
+
+	<GridPane hgap="6" vgap="7" id="GridPane"
+           xmlns:fx="http://javafx.com/fxml"
+          fx:id="configPane" fx:controller="Controller.configController"
+          prefHeight="500.0" prefWidth="500.0">
+          
+         
+    <padding>
+        <Insets   top="10" bottom="10" left="20" right="20"/>
+    </padding>
+    <children>
+        <Text  text="Droite">
+            <GridPane.rowIndex>0</GridPane.rowIndex>
+            <GridPane.columnIndex>0</GridPane.columnIndex>
+        </Text>
+        <Text   text="Gauche">
+            <GridPane.rowIndex>1</GridPane.rowIndex>
+            <GridPane.columnIndex>0</GridPane.columnIndex>
+        </Text>
+        <Text   text="Haut">
+            <GridPane.rowIndex>2</GridPane.rowIndex>
+            <GridPane.columnIndex>0</GridPane.columnIndex>
+        </Text>
+        <Text   text="Bas">
+            <GridPane.rowIndex>3</GridPane.rowIndex>
+            <GridPane.columnIndex>0</GridPane.columnIndex>
+        </Text>
+        <Text   text="Tirer">
+            <GridPane.rowIndex>4</GridPane.rowIndex>
+            <GridPane.columnIndex>0</GridPane.columnIndex>
+        </Text>
+        
+        <TextField fx:id="Droite" onKeyPressed="#sauvegardeTouche">
+            <GridPane.rowIndex>0</GridPane.rowIndex>
+            <GridPane.columnIndex>1</GridPane.columnIndex>
+        </TextField>
+        <TextField fx:id="Gauche" onKeyPressed="#sauvegardeTouche">
+            <GridPane.rowIndex>1</GridPane.rowIndex>
+            <GridPane.columnIndex>1</GridPane.columnIndex>
+        </TextField>
+        <TextField fx:id="Haut" onKeyPressed="#sauvegardeTouche">
+            <GridPane.rowIndex>2</GridPane.rowIndex>
+            <GridPane.columnIndex>1</GridPane.columnIndex>
+        </TextField>
+        <TextField fx:id="Bas" onKeyPressed="#sauvegardeTouche">
+            <GridPane.rowIndex>3</GridPane.rowIndex>
+            <GridPane.columnIndex>1</GridPane.columnIndex>
+        </TextField>
+        <TextField fx:id="Tirer" onKeyPressed="#sauvegardeTouche">
+            <GridPane.rowIndex>4</GridPane.rowIndex>
+            <GridPane.columnIndex>1</GridPane.columnIndex>
+        </TextField>
+        
+       <Button fx:id="buttonSave" text="Sauvegarder" onAction="#sauvegarder" >
+            <GridPane.halignment>right</GridPane.halignment>
+            <GridPane.rowIndex>5
+            </GridPane.rowIndex>
+            <GridPane.columnIndex>1</GridPane.columnIndex>
+        </Button>
+    </children>
+
+
+</GridPane>
+	
+	
