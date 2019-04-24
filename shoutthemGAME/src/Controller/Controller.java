@@ -271,6 +271,7 @@ public class Controller implements Initializable {
     void creationObstacle() {
 		boolean creation = true;
 		for (int i = 0; i < nbObstacle; i++) {
+			
 
 			Obstacle obstacle_game = new Obstacle(Intersect.randomPosition(sceneGame.getPrefWidth()),
 					Intersect.randomPosition(sceneGame.getPrefHeight()));
