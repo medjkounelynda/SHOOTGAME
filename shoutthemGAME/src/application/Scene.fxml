@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.control.MenuBar?>
@@ -14,11 +9,16 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import java.net.*?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.Slider?>
 
 
-<BorderPane   minWidth="500" prefHeight="600.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" 
-            onKeyPressed="#Direction" onKeyReleased="#Direction2" fx:controller="Controller.Controller">
-    <stylesheets>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="Controller.Controller" onKeyPressed="#Direction" onKeyReleased="#Direction2" 
+	>
+	<!-- TODO Add Nodes -->
+
+	<stylesheets>
 		<URL value="@application.css" />
 	</stylesheets>
 
@@ -33,7 +33,7 @@
 	</top>
 
 	<center>
-		<Pane styleClass="game-scene" fx:id="sceneGame" minWidth="600" prefWidth="600" prefHeight="500">
+		<Pane styleClass="game-scene" fx:id="sceneGame" minWidth="700" prefWidth="500" prefHeight="500">
 	
 		</Pane>
 		
@@ -41,10 +41,8 @@
 <left></left>
 <bottom>
         <TitledPane  text="vitesse joueur">
-             <Slider  fx:id="slider" min="2" max="8" value="0.3"></Slider>
-           
+            <Slider  fx:id="slider" min="2" max="8" value="0.3"></Slider>
         </TitledPane>
-           
-      
     </bottom>
 </BorderPane>
+

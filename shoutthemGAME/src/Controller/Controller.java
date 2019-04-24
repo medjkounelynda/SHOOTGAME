@@ -7,8 +7,11 @@
 package Controller;
 
 import application.Demon;
+import application.Intersect;
+import application.Obstacle;
 import application.Pistolero;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.animation.AnimationTimer;
@@ -33,21 +36,32 @@ public class Controller implements Initializable {
 	 @FXML
 	    Slider slider;
 	 
+	 private int nbBalle=0;
+	 private int nbDemon=5;
+	 private int nbObstacle = 5;
+	 LinkedList<Obstacle> liste_obstacle = new LinkedList<Obstacle>();
+	 private Demon[] demons= new Demon[nbDemon]; 
+	 
 	 private KeyCode up;
 	 private KeyCode down;
 	 private KeyCode right;
 	 private KeyCode left;
 	 private KeyCode tire;
 	 
-	 private int nbBalle=0;
-	 private int nbDemon=5;
-         private Demon[] demons= new Demon[nbDemon]; 
+	 
+         
 	 private IntegerProperty nbballe_restante=new SimpleIntegerProperty();
 	 private IntegerProperty ndemon_restant=new SimpleIntegerProperty();
 	 private URL urlImagePist;
 	 
 	
-	
+	 public int getNbObstacle() {
+			return nbObstacle;
+		}
+
+		public void setNbObstacle(int nbObstacle) {
+			this.nbObstacle = nbObstacle;
+		}
 	
 	public URL getUrlImagePist() {
 		return urlImagePist;
@@ -121,10 +135,10 @@ public class Controller implements Initializable {
 
 	@FXML
 	void Direction(KeyEvent e) {
-		System.out.println("lw;q;q"+down.getName());
+		//System.out.println("lw;q;q"+down.getName());
 		if (e.getCode() == up) {
 			postelero.setMovey(-postelero.getVitesse().doubleValue());
-System.out.println("lw;q;q"+up.getName());
+//System.out.println("lw;q;q"+up.getName());
 		}
 		if (e.getCode() == down) {
 			postelero.setMovey(postelero.getVitesse().doubleValue());
@@ -190,21 +204,18 @@ System.out.println("lw;q;q"+up.getName());
 		postelero.getVitesse().bind(slider.valueProperty()
                 .multiply(1 / 0.3));
 		
+		// -----------------------------------------------ajout
+				// obstacle----------------------------------------------
+				creationObstacle();
+				
+				
+		
+		
 		double y=0;
 		double xx=0;
-		//nbballe_restante.bind(postelero.nb_balle_restante.asObject());
+	
 		for (int i = 0; i < nbDemon; i++) {
-			/*System.out.println("hhhdjd");
-			double x=(i*(Demon.radius))+Demon.radius/2;//%(sceneGame.getPrefWidth()-50);
 			
-			
-			System.out.println("merdeee"+x);
-			if(xx>x) {
-				xx=x;
-				 y=(y+Demon.radius);//%(sceneGame.getPrefHeight()-50);
-			}else {
-				xx=x;
-			}*/
                     double px = random.nextDouble() * (sceneGame.getPrefWidth() - Demon.radius * 2)
                     + Demon.radius;
             double py = random.nextDouble() * (sceneGame.getPrefHeight() - Demon.radius * 2)
@@ -243,6 +254,9 @@ System.out.println("lw;q;q"+up.getName());
                                 }*/
 				//System.out.println(nbballe_restante);
 				
+				Intersect.collision(postelero.getList_balle(), liste_obstacle);
+				
+				
 				
 
 			}
@@ -254,5 +268,41 @@ System.out.println("lw;q;q"+up.getName());
 	
 	
        
-    
+    void creationObstacle() {
+		boolean creation = true;
+		for (int i = 0; i < nbObstacle; i++) {
+
+			Obstacle obstacle_game = new Obstacle(Intersect.randomPosition(sceneGame.getPrefWidth()),
+					Intersect.randomPosition(sceneGame.getPrefHeight()));
+			if (!obstacle_game.getBoundsInParent().intersects(postelero.getBoundsInParent())) {
+				//System.out.println("obstacle pistelero");
+				for (int j = 0; j < liste_obstacle.size(); j++) {
+					if (liste_obstacle.get(j).getBoundsInParent().intersects(obstacle_game.getBoundsInParent())) {
+						j = liste_obstacle.size();
+						i = i - 1;
+						//System.out.println("change" + creation + i);
+						creation = false;
+					} else {
+						//System.out.println("intersection dobstacle");
+						creation = true;
+					}
+
+				}
+
+			} else {
+				i = i - 1;
+				// System.out.println("change pistolero"+creation+i);
+				creation = false;
+			}
+
+			if (creation) {
+				liste_obstacle.add(obstacle_game);
+				sceneGame.getChildren().add(obstacle_game);
+				
+
+			}
+
+		}
+	}
+  
 }

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Button?>
@@ -12,14 +18,10 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.SpinnerValueFactory?>
-
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.image.*?>
 
-<GridPane hgap="6" vgap="7" id="GridPane"
-	xmlns:fx="http://javafx.com/fxml" fx:id="configPane"
-	fx:controller="Controller.AcceuilController" prefHeight="500.0"
-	prefWidth="500.0">
+<GridPane hgap="6" vgap="7" id="GridPane" xmlns:fx="http://javafx.com/fxml" fx:id="configPane" fx:controller="Controller.AcceuilController" prefHeight="500.0" prefWidth="500.0">
 
 	<padding>
 		<Insets top="60" bottom="10" left="20" right="20" />
@@ -47,7 +49,7 @@
 
 	<Spinner  fx:id="spinnerNbBalle" disable="true" editable="true">
 	<valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="1000" initialValue="0" amountToStepBy="1"/>
+                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="1000" initialValue="0" amountToStepBy="1"/>
             </valueFactory>
 	
 		<GridPane.rowIndex>3</GridPane.rowIndex>
@@ -105,6 +107,3 @@
 
 
 	
-	
-
-

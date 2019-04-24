@@ -1,15 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package application;
 
-/**
- *
- * @author netbook
- */
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
@@ -26,22 +16,22 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class Pistolero extends Rectangle {
-	 private DoubleProperty vitesse = new SimpleDoubleProperty();
-	 
+	private DoubleProperty vitesse = new SimpleDoubleProperty();
 
 	private double movex = 0;
 	private double movey = 0;
 
-	
 	private double X;
 	private double Y;
-	private double rotate=0;
-	private int nb_balle_autorise=0;
-	
-     public IntegerProperty nb_balle_restante=new SimpleIntegerProperty();
-    
-	public boolean tire=false;
-	
+	private double rotate = 0;
+	private int nb_balle_autorise = 0;
+
+	public IntegerProperty nb_balle_restante = new SimpleIntegerProperty();
+
+	public boolean tire = false;
+
+	private LinkedList<Balle> list_balle = new LinkedList<Balle>();
+
 	public IntegerProperty getNb_balle_restante() {
 		return nb_balle_restante;
 	}
@@ -50,46 +40,45 @@ public class Pistolero extends Rectangle {
 		this.nb_balle_restante = new SimpleIntegerProperty(nb_balle_restante);
 	}
 
-
-	
 	public int getNb_balle_autorise() {
 		return nb_balle_autorise;
 	}
 
 	public void setNb_balle_autorise(int nb_balle_autorise) {
 		this.nb_balle_autorise = nb_balle_autorise;
-		nb_balle_restante=new SimpleIntegerProperty(nb_balle_autorise);
+		nb_balle_restante = new SimpleIntegerProperty(nb_balle_autorise);
 	}
 
-	
-	
-	
-private LinkedList<Balle> list_balle= new LinkedList<Balle>();
+	public LinkedList<Balle> getList_balle() {
+		return list_balle;
+	}
 
-	
+	public void setList_balle(LinkedList<Balle> list_balle) {
+		this.list_balle = list_balle;
+	}
 
-	public Pistolero(double x, double y, int nb_balle,URL urlImage) {
+	public Pistolero(double x, double y, int nb_balle, URL urlImage) {
 		this.setWidth(50);
 		this.setHeight(50);
-		
+
 		X = x / 2;
 		Y = y / 1.5;
-		
+
 		System.out.println(X);
 
 		this.setTranslateX(X);
 		this.setTranslateY(Y);
-		nb_balle_autorise=nb_balle;
-		
-		this.getStyleClass().add("Pistolero");
+		nb_balle_autorise = nb_balle;
+
+		this.getStyleClass().add("pistolero");
 
 		URL url = getClass().getResource("/media/player.png");
 		Image cat = new Image(url.toString());
-		//cat.widthProperty().s
+		// cat.widthProperty().s
 		this.setFill(new ImagePattern(cat));
 
 	}
-	
+
 	public DoubleProperty getVitesse() {
 		return vitesse;
 	}
@@ -97,6 +86,7 @@ private LinkedList<Balle> list_balle= new LinkedList<Balle>();
 	public void setVitesse(DoubleProperty vitesse) {
 		this.vitesse = vitesse;
 	}
+
 	public double getrotate() {
 		return rotate;
 	}
@@ -141,7 +131,6 @@ private LinkedList<Balle> list_balle= new LinkedList<Balle>();
 
 		X += movex;
 		Y += movey;
-		
 
 		if (X + this.getWidth() <= ((Region) getParent()).getWidth() && X >= 0 && Y >= 0
 				&& Y + this.getHeight() <= ((Region) getParent()).getHeight()) {
@@ -156,55 +145,55 @@ private LinkedList<Balle> list_balle= new LinkedList<Balle>();
 
 		}
 	}
-	
-	
-	
+
 	public void shoot() {
-		
-		//for (int i = nb_balle_tire; i < list_balle.size(); i++) {
-		//System.out.println("nbballe"+nb_balle_autorise);
-		
-		if(tire && nb_balle_autorise==0) {
-			
-		this.addBalle(new Balle(this.getx()+this.getWidth()/2,this.gety()));
-		
+
+		// for (int i = nb_balle_tire; i < list_balle.size(); i++) {
+		// System.out.println("nbballe"+nb_balle_autorise);
+
+		if (tire && nb_balle_autorise == 0) {
+
+			this.addBalle(new Balle(this.getx() + this.getWidth() / 2, this.gety()));
+
 			((Pane) getParent()).getChildren().add(list_balle.getLast());
+
+			tire = false;
+		} else if (tire && nb_balle_autorise > 0 && nb_balle_restante.intValue() > 0) {
+
+			this.addBalle(new Balle(this.getx() + this.getWidth() / 2, this.gety()));
+
+			((Pane) getParent()).getChildren().add(list_balle.getLast());
+			nb_balle_restante.set(nb_balle_restante.intValue() - 1);
+			;
+			 System.out.println("nouvelle valeur"+nb_balle_restante.intValue());
+
+			tire = false;
+		} else
+
+			for (int i = 0; i < list_balle.size(); i++) {
+				
 			
-			tire=false;
-			}else if(tire && nb_balle_autorise>0 && nb_balle_restante.intValue()>0) {
+				if(list_balle.get(i).moveballe()) {
+					
+					((Pane) getParent()).getChildren().remove(list_balle.get(i));
 				
-				this.addBalle(new Balle(this.getx()+this.getWidth()/2,this.gety()));
-				
-				((Pane) getParent()).getChildren().add(list_balle.getLast());
-				nb_balle_restante.set(nb_balle_restante.intValue()-1);;
-				//System.out.println("nouvelle valeur"+nb_balle_restante.intValue());
-				
-				tire=false;
-			}else 
-		
-		
-		
-	
-		
-		 for (Balle p : list_balle) {
-             p.moveballe();
-            
-         }
-	
+					list_balle.remove(list_balle.get(i));
+				}
+
+			}
+
+		//System.out.println("liste de balle" + list_balle.size());
+
 	}
-	
-	
-	
-	
+
 	public void addBalle(Balle b) {
 		list_balle.add(b);
-		
+
 	}
-	
+
 	public void removeballe(Balle b) {
 		list_balle.remove(b);
-		
+
 	}
 
 }
-
