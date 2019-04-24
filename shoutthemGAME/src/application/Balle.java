@@ -9,6 +9,7 @@ public class Balle extends Circle{
 	private int vitessey=5;
 	private int vitessex=0;
 	private double x;
+	
 	private double y;
 	
 	public Balle(double xx,double yy) {
