@@ -1,31 +1,33 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package Controller;
 
+import application.Demon;
+import application.Pistolero;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
-
-import com.sun.glass.ui.Timer;
-
-import application.demon;
-import application.pistolero;
 import javafx.animation.AnimationTimer;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.shape.Rectangle;
 
+/**
+ * FXML Controller class
+ *
+ * @author netbook
+ */
 public class Controller implements Initializable {
-
-	@FXML
+    @FXML
 	private Pane sceneGame;
 	
 	 @FXML
@@ -38,7 +40,8 @@ public class Controller implements Initializable {
 	 private KeyCode tire;
 	 
 	 private int nbBalle=0;
-	 private int nbDemon=20;
+	 private int nbDemon=5;
+         private Demon[] demons= new Demon[nbDemon]; 
 	 private IntegerProperty nbballe_restante=new SimpleIntegerProperty();
 	 private IntegerProperty ndemon_restant=new SimpleIntegerProperty();
 	 private URL urlImagePist;
@@ -114,7 +117,7 @@ public class Controller implements Initializable {
 		this.tire = tire;
 	}
 
-	pistolero postelero;
+	Pistolero postelero;
 
 	@FXML
 	void Direction(KeyEvent e) {
@@ -172,11 +175,14 @@ System.out.println("lw;q;q"+up.getName());
 		}
 	}
 
-	@FXML
-	@Override
-	public void initialize(URL url, ResourceBundle resourceBundle) {
-
-		postelero=new pistolero(sceneGame.getPrefWidth(), sceneGame.getPrefHeight(),nbBalle,urlImagePist);
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+        Random random = new Random(System.nanoTime());
+        postelero=new Pistolero(sceneGame.getPrefWidth(), sceneGame.getPrefHeight(),nbBalle,urlImagePist);
 		
 		
 		sceneGame.getChildren().add(postelero);
@@ -188,21 +194,37 @@ System.out.println("lw;q;q"+up.getName());
 		double xx=0;
 		//nbballe_restante.bind(postelero.nb_balle_restante.asObject());
 		for (int i = 0; i < nbDemon; i++) {
-			System.out.println("hhhdjd");
-			double x=(i*70)%(sceneGame.getPrefWidth()-50);
+			/*System.out.println("hhhdjd");
+			double x=(i*(Demon.radius))+Demon.radius/2;//%(sceneGame.getPrefWidth()-50);
 			
 			
 			System.out.println("merdeee"+x);
 			if(xx>x) {
 				xx=x;
-				 y=(y+70)%(sceneGame.getPrefHeight()-50);
+				 y=(y+Demon.radius);//%(sceneGame.getPrefHeight()-50);
 			}else {
 				xx=x;
-			}
-			demon c=new demon(x, y);
-			sceneGame.getChildren().add(c);
+			}*/
+                    double px = random.nextDouble() * (sceneGame.getPrefWidth() - Demon.radius * 2)
+                    + Demon.radius;
+            double py = random.nextDouble() * (sceneGame.getPrefHeight() - Demon.radius * 2)
+                    + Demon.radius;
+            double vx = 8 * (random.nextDouble() - 0.5);
+            double vy = 8 * (random.nextDouble() - 0.5);
+
+            
+                        demons[i]= new  Demon(px, py, vx,vy);
+                        demons[i].rateProperty().bind(slider.valueProperty()
+                            .multiply(1 / 0.3));
+		
+			//Demon c=new Demon(x, y);
+			sceneGame.getChildren().add(demons[i]);
+                       
 			
 		}
+                 for(int i=0;i<nbDemon; i++) {
+                           demons[i].move();
+                }
 		
 		
 		
@@ -216,6 +238,9 @@ System.out.println("lw;q;q"+up.getName());
 				postelero.move();
 				postelero.shoot();
 				nbballe_restante.set(postelero.nb_balle_restante.intValue());
+                                /* for (Demon d: demons) {
+                                    d.move();
+                                }*/
 				//System.out.println(nbballe_restante);
 				
 				
@@ -228,6 +253,6 @@ System.out.println("lw;q;q"+up.getName());
 	}
 	
 	
-	
-
+       
+    
 }

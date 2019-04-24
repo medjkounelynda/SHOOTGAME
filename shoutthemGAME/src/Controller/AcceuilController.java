@@ -1,9 +1,13 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package Controller;
 
-import java.awt.Checkbox;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -16,8 +20,13 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 
+/**
+ * FXML Controller class
+ *
+ * @author netbook
+ */
 public class AcceuilController implements Initializable {
-	@FXML
+    @FXML
 	Button buttonJouer;
 	
 	@FXML
@@ -79,10 +88,12 @@ public class AcceuilController implements Initializable {
 	}
 	
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-	
-balleInfini.selectedProperty().addListener(new ChangeListener<Boolean>() {
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        balleInfini.selectedProperty().addListener(new ChangeListener<Boolean>() {
 
 	@Override
 	public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -98,6 +109,6 @@ balleInfini.selectedProperty().addListener(new ChangeListener<Boolean>() {
 	
 	
 });
-	}
-
+    }    
+    
 }
