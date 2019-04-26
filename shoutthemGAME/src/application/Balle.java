@@ -56,6 +56,8 @@ public class Balle extends Circle{
 	
 	
 	public boolean moveballe() {
+		//setCenterX(getCenterX()-vitessex);
+		//setCenterY(getVitessey()-vitessey);
 		y-=vitessey;
 		x-=vitessex;
 		this.setTranslateY(y);

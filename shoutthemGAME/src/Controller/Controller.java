@@ -30,39 +30,36 @@ import javafx.scene.layout.Pane;
  * @author netbook
  */
 public class Controller implements Initializable {
-    @FXML
+	@FXML
 	private Pane sceneGame;
-	
-	 @FXML
-	    Slider slider;
-	 
-	 private int nbBalle=0;
-	 private int nbDemon=5;
-	 private int nbObstacle = 5;
-	 LinkedList<Obstacle> liste_obstacle = new LinkedList<Obstacle>();
-	 private Demon[] demons= new Demon[nbDemon]; 
-	 
-	 private KeyCode up;
-	 private KeyCode down;
-	 private KeyCode right;
-	 private KeyCode left;
-	 private KeyCode tire;
-	 
-	 
-         
-	 private IntegerProperty nbballe_restante=new SimpleIntegerProperty();
-	 private IntegerProperty ndemon_restant=new SimpleIntegerProperty();
-	 private URL urlImagePist;
-	 
-	
-	 public int getNbObstacle() {
-			return nbObstacle;
-		}
 
-		public void setNbObstacle(int nbObstacle) {
-			this.nbObstacle = nbObstacle;
-		}
-	
+	@FXML
+	Slider slider;
+
+	private int nbBalle = 0;
+	private int nbDemon = 6;
+	private int nbObstacle = 5;
+	LinkedList<Obstacle> liste_obstacle = new LinkedList<Obstacle>();
+	private LinkedList<Demon> demons = new LinkedList<Demon>();
+
+	private KeyCode up;
+	private KeyCode down;
+	private KeyCode right;
+	private KeyCode left;
+	private KeyCode tire;
+
+	private IntegerProperty nbballe_restante = new SimpleIntegerProperty();
+	private IntegerProperty ndemon_restant = new SimpleIntegerProperty();
+	private URL urlImagePist;
+
+	public int getNbObstacle() {
+		return nbObstacle;
+	}
+
+	public void setNbObstacle(int nbObstacle) {
+		this.nbObstacle = nbObstacle;
+	}
+
 	public URL getUrlImagePist() {
 		return urlImagePist;
 	}
@@ -80,12 +77,12 @@ public class Controller implements Initializable {
 	}
 
 	public int getNbBalle() {
-		
+
 		return nbBalle;
 	}
 
 	public void setNbBalle(int nbballe) {
-		
+
 		this.nbBalle = nbballe;
 		postelero.setNb_balle_autorise(nbBalle);
 	}
@@ -135,7 +132,7 @@ public class Controller implements Initializable {
 
 	@FXML
 	void Direction(KeyEvent e) {
-		//System.out.println("lw;q;q"+down.getName());
+		// System.out.println("lw;q;q"+down.getName());
 		if (e.getCode() == up) {
 			postelero.setMovey(-postelero.getVitesse().doubleValue());
 //System.out.println("lw;q;q"+up.getName());
@@ -153,11 +150,11 @@ public class Controller implements Initializable {
 
 		}
 		if (e.getCode() == tire) {
-			//System.out.println(postelero.getx());
-			
-			//postelero.addBalle(new balle(postelero.getx(), postelero.gety()));
-			
-			postelero.tire=true;
+			// System.out.println(postelero.getx());
+
+			// postelero.addBalle(new balle(postelero.getx(), postelero.gety()));
+
+			postelero.tire = true;
 
 		}
 	}
@@ -182,82 +179,118 @@ public class Controller implements Initializable {
 
 		}
 		if (e.getCode() == tire) {
-			//System.out.println(postelero.getx());
-			postelero.tire=false;
-			
+			// System.out.println(postelero.getx());
+			postelero.tire = false;
 
 		}
 	}
 
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        Random random = new Random(System.nanoTime());
-        postelero=new Pistolero(sceneGame.getPrefWidth(), sceneGame.getPrefHeight(),nbBalle,urlImagePist);
-		
-		
-		sceneGame.getChildren().add(postelero);
-		
-		postelero.getVitesse().bind(slider.valueProperty()
-                .multiply(1 / 0.3));
-		
-		// -----------------------------------------------ajout
-				// obstacle----------------------------------------------
-				creationObstacle();
-				
-				
-		
-		
-		double y=0;
-		double xx=0;
-	
-		for (int i = 0; i < nbDemon; i++) {
-			
-                    double px = random.nextDouble() * (sceneGame.getPrefWidth() - Demon.radius * 2)
-                    + Demon.radius;
-            double py = random.nextDouble() * (sceneGame.getPrefHeight() - Demon.radius * 2)
-                    + Demon.radius;
-            double vx = 8 * (random.nextDouble() - 0.5);
-            double vy = 8 * (random.nextDouble() - 0.5);
+	/**
+	 * Initializes the controller class.
+	 */
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		// TODO
+		Random random = new Random(System.nanoTime());
+		postelero = new Pistolero(sceneGame.getPrefWidth(), sceneGame.getPrefHeight(), nbBalle, urlImagePist);
 
-            
-                        demons[i]= new  Demon(px, py, vx,vy);
-                        demons[i].rateProperty().bind(slider.valueProperty()
-                            .multiply(1 / 0.3));
-		
-			//Demon c=new Demon(x, y);
-			sceneGame.getChildren().add(demons[i]);
-                       
-			
+		sceneGame.getChildren().add(postelero);
+
+		postelero.getVitesse().bind(slider.valueProperty().multiply(1 / 0.3));
+
+		// -----------------------------------------------ajout
+		// obstacle----------------------------------------------
+
+		creationObstacle();
+
+		boolean creation = true;
+
+		// double px = random.nextDouble() * (sceneGame.getPrefWidth() - Demon.radius *
+		// 2) + Demon.radius;
+		// double py = random.nextDouble() * (sceneGame.getPrefHeight() - Demon.radius *
+		// 2) + Demon.radius;
+		double px = 0;
+		double py = 0;
+		double vx;
+		double vy;
+
+		while (creation) {
+
+			px = Intersect.randomPosition(sceneGame.getPrefWidth());
+			py = Intersect.randomPosition(sceneGame.getPrefHeight());
+			vx = 1 * (random.nextDouble() - 0.5);
+			vy = 1 * (random.nextDouble() - 0.5);
+
+			Demon demon = new Demon(px, py, vx, vy);
+
+			if (demon.getBoundsInParent().intersects(postelero.getBoundsInParent())) {
+				// i = i - 1;
+				// System.out.println("change pistolero"+creation+i);
+				creation = true;
+
+			} else {
+
+				// System.out.println("obstacle pistelero");
+				for (int j = 0; j < liste_obstacle.size(); j++) {
+					if (liste_obstacle.get(j).getBoundsInParent().intersects(demon.getBoundsInParent())) {
+						j = liste_obstacle.size();
+						// i = i - 1;
+						System.out.println("pas bon avec lobstacle" + creation);
+						creation = true;
+					} else {
+						creation = false;
+						System.out.println("sorti for de lenemi");
+
+					}
+
+				}
+				System.out.println("sortie for de lobstacle");
+
+				// System.out.println("intersection dobstacle");
+
+			}
 		}
-                 for(int i=0;i<nbDemon; i++) {
-                           demons[i].move();
-                }
-		
-		
-		
-	
-		
+
+		if (!creation) {
+			// System.out.println("creation dun ennemi" + i);
+			for (int i = 0; i < nbDemon; i++) {
+				System.out.println("creationn");
+
+				Demon d = new Demon(px, py, 3 * (random.nextDouble() - 0.5),
+						3 * (random.nextDouble() - 0.5));
+
+				for (int j = 0; j < liste_obstacle.size(); j++) {
+					Intersect.collision(d, liste_obstacle.get(j));
+
+				}
+				d.rateProperty().bind(slider.valueProperty().multiply(1 / 0.3));
+				demons.add(d);
+				sceneGame.getChildren().add(demons.getLast());
+
+			}
+
+		}
+
+		// System.out.println("nouvelle creation encore" + i);
+
+		for (int i = 0; i < demons.size(); i++) {
+			demons.get(i).move();
+		}
+
 		AnimationTimer timer = new AnimationTimer() {
 
 			@Override
 			public void handle(long now) {
 
 				postelero.move();
-				postelero.shoot();
+				postelero.shoot(liste_obstacle,demons);
 				nbballe_restante.set(postelero.nb_balle_restante.intValue());
-                                /* for (Demon d: demons) {
-                                    d.move();
-                                }*/
-				//System.out.println(nbballe_restante);
 				
-				Intersect.collision(postelero.getList_balle(), liste_obstacle);
-				
-				
-				
+
+				 Intersect.collision(postelero.getList_balle(), demons);
+				 
+				 System.out.println("nombre de deamon"+demons.size());
+				// Intersect.collision(demons, liste_obstacle);
 
 			}
 		};
@@ -265,26 +298,23 @@ public class Controller implements Initializable {
 		timer.start();
 
 	}
-	
-	
-       
-    void creationObstacle() {
+
+	void creationObstacle() {
 		boolean creation = true;
 		for (int i = 0; i < nbObstacle; i++) {
-			
 
 			Obstacle obstacle_game = new Obstacle(Intersect.randomPosition(sceneGame.getPrefWidth()),
 					Intersect.randomPosition(sceneGame.getPrefHeight()));
 			if (!obstacle_game.getBoundsInParent().intersects(postelero.getBoundsInParent())) {
-				//System.out.println("obstacle pistelero");
+				// System.out.println("obstacle pistelero");
 				for (int j = 0; j < liste_obstacle.size(); j++) {
 					if (liste_obstacle.get(j).getBoundsInParent().intersects(obstacle_game.getBoundsInParent())) {
 						j = liste_obstacle.size();
 						i = i - 1;
-						//System.out.println("change" + creation + i);
+						// System.out.println("change" + creation + i);
 						creation = false;
 					} else {
-						//System.out.println("intersection dobstacle");
+						// System.out.println("intersection dobstacle");
 						creation = true;
 					}
 
@@ -299,11 +329,10 @@ public class Controller implements Initializable {
 			if (creation) {
 				liste_obstacle.add(obstacle_game);
 				sceneGame.getChildren().add(obstacle_game);
-				
 
 			}
 
 		}
 	}
-  
+
 }

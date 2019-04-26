@@ -12,6 +12,7 @@ package application;
  */
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.Random;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -28,7 +29,7 @@ import javafx.util.Duration;
 
 
 public class Demon extends Circle {
-        public static int radius=30;
+        public static int radius=25;
 	
         DoubleProperty vx = new SimpleDoubleProperty();
         DoubleProperty vy = new SimpleDoubleProperty();
@@ -42,7 +43,7 @@ public class Demon extends Circle {
        
          URL url;
         int rr= r.nextInt(10);
-        System.out.println("random = "+rr);
+       // System.out.println("random = "+rr);
         if(rr%2==0){
             this.type= Sexe.femelle;
            url = getClass().getResource("/media/demonFemelle.png");
@@ -63,6 +64,8 @@ public class Demon extends Circle {
 		//cat.widthProperty().s
 	this.setFill(new ImagePattern(cat));
 		//System.out.println("width"+xx+yy);
+	
+	
 		
 	}
 	
@@ -104,6 +107,7 @@ public class Demon extends Circle {
 	}
         /* la méthode move() depace la particule */
     public void move() {
+    	
         Timeline tl = new Timeline();
         tl.setCycleCount(Animation.INDEFINITE);
          KeyFrame moveBall = new KeyFrame(Duration.seconds(0.1),
@@ -137,6 +141,8 @@ public class Demon extends Circle {
             setCenterY(((Region) getParent()).getHeight() - getRadius());
             setVy(-getVy());
         }
+        
+        
                         
                     }
                 });

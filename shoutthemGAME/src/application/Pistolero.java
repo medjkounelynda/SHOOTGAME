@@ -146,21 +146,44 @@ public class Pistolero extends Rectangle {
 		}
 	}
 
-	public void shoot() {
+	public void shoot(LinkedList<Obstacle> p,LinkedList<Demon> d) {
 
 		// for (int i = nb_balle_tire; i < list_balle.size(); i++) {
 		// System.out.println("nbballe"+nb_balle_autorise);
 
 		if (tire && nb_balle_autorise == 0) {
+			
+			Balle nouvelleBalle=new Balle(this.getx() + this.getWidth() / 2, this.gety());
+			for (int j = 0; j < p.size(); j++) {
+				Intersect.collision(nouvelleBalle, p.get(j));
 
-			this.addBalle(new Balle(this.getx() + this.getWidth() / 2, this.gety()));
+			}
+		
+				//Intersect.collision(list_balle, d);
+
+			
+			this.addBalle(nouvelleBalle);
 
 			((Pane) getParent()).getChildren().add(list_balle.getLast());
 
 			tire = false;
-		} else if (tire && nb_balle_autorise > 0 && nb_balle_restante.intValue() > 0) {
+			
+			
+				
 
-			this.addBalle(new Balle(this.getx() + this.getWidth() / 2, this.gety()));
+			
+			
+		} else if (tire && nb_balle_autorise > 0 && nb_balle_restante.intValue() > 0) {
+			
+			Balle nouvelleBalle=new Balle(this.getx() + this.getWidth() / 2, this.gety());
+			this.addBalle(nouvelleBalle);
+			
+			for (int j = 0; j < p.size(); j++) {
+				Intersect.collision(nouvelleBalle, p.get(j));
+
+			}
+			
+			
 
 			((Pane) getParent()).getChildren().add(list_balle.getLast());
 			nb_balle_restante.set(nb_balle_restante.intValue() - 1);
@@ -168,6 +191,7 @@ public class Pistolero extends Rectangle {
 			 System.out.println("nouvelle valeur"+nb_balle_restante.intValue());
 
 			tire = false;
+			
 		} else
 
 			for (int i = 0; i < list_balle.size(); i++) {
