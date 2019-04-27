@@ -155,6 +155,7 @@ public class Demon extends Circle {
      private int randomVitesse() {
                     Random random = new Random(System.nanoTime());
                     if (random.nextInt(2)==1) {
+                    	
                             return -1;
                     }else {
                     return 1;

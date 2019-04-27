@@ -32,8 +32,8 @@ public class Obstacle extends Circle {
 		
 		
 
-		this.setTranslateX(xobs);
-		this.setTranslateY(yobs);
+		this.setCenterX(xobs);
+		this.setCenterY(yobs);
 	}
 	
 

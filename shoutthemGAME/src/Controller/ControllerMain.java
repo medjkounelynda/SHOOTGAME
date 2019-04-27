@@ -177,6 +177,17 @@ public class ControllerMain implements Initializable {
 				
 			});
 		
+		gameSceneController.mortjoueur.addListener((Observable, oldVal, newVal) -> {
+			if (newVal==true) {
+				 System.out.println("fin du jeu");	
+			}
+			
+	    		
+				
+			});
+		
+		
+		
 	}
 
     

@@ -15,7 +15,9 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.animation.AnimationTimer;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,10 +39,10 @@ public class Controller implements Initializable {
 	Slider slider;
 
 	private int nbBalle = 0;
-	private int nbDemon = 6;
+	private int nbDemon = 10;
 	private int nbObstacle = 5;
 	LinkedList<Obstacle> liste_obstacle = new LinkedList<Obstacle>();
-	private LinkedList<Demon> demons = new LinkedList<Demon>();
+	 LinkedList<Demon> demons = new LinkedList<Demon>();
 
 	private KeyCode up;
 	private KeyCode down;
@@ -50,6 +52,7 @@ public class Controller implements Initializable {
 
 	private IntegerProperty nbballe_restante = new SimpleIntegerProperty();
 	private IntegerProperty ndemon_restant = new SimpleIntegerProperty();
+	 BooleanProperty mortjoueur=new SimpleBooleanProperty(false);
 	private URL urlImagePist;
 
 	public int getNbObstacle() {
@@ -214,24 +217,55 @@ public class Controller implements Initializable {
 		double vx;
 		double vy;
 
-		while (creation) {
+	/*	while (creation) {
 
-			px = Intersect.randomPosition(sceneGame.getPrefWidth());
-			py = Intersect.randomPosition(sceneGame.getPrefHeight());
+			px = Intersect.randomPosition(sceneGame.getPrefWidth()/7);
+			py = Intersect.randomPosition(0);
 			vx = 1 * (random.nextDouble() - 0.5);
 			vy = 1 * (random.nextDouble() - 0.5);
 
 			Demon demon = new Demon(px, py, vx, vy);
+			
+			
+			for (int j = 0; j < demons.size(); j++) {
+				if (demons.get(j).getBoundsInParent().intersects(demon.getBoundsInParent())) {
+					j = demons.size();
+					// i = i - 1;
+					System.out.println("pas bon avec lobstacle" + creation);
+					creation = true;
+				} else {
+					creation = false;
+					System.out.println("sorti for de lenemi");
 
-			if (demon.getBoundsInParent().intersects(postelero.getBoundsInParent())) {
+				}
+
+			}
+			
+			if (!creation) {
+				// System.out.println("creation dun ennemi" + i);
+				
+
+					for (int j = 0; j < liste_obstacle.size(); j++) {
+						Intersect.collision(demon, liste_obstacle.get(j));
+
+					}
+					demon.rateProperty().bind(slider.valueProperty().multiply(1 / 0.3));
+					demons.add(demon);
+					sceneGame.getChildren().add(demons.getLast());
+
+				}
+
+			
+			
+			//if (demon.getBoundsInParent().intersects(postelero.getBoundsInParent())) {
 				// i = i - 1;
 				// System.out.println("change pistolero"+creation+i);
-				creation = true;
+			//	creation = true;
 
-			} else {
+			//} else {
 
 				// System.out.println("obstacle pistelero");
-				for (int j = 0; j < liste_obstacle.size(); j++) {
+			/*	for (int j = 0; j < liste_obstacle.size(); j++) {
 					if (liste_obstacle.get(j).getBoundsInParent().intersects(demon.getBoundsInParent())) {
 						j = liste_obstacle.size();
 						// i = i - 1;
@@ -243,21 +277,21 @@ public class Controller implements Initializable {
 
 					}
 
-				}
-				System.out.println("sortie for de lobstacle");
+				}*/
+				//System.out.println("sortie for de lobstacle");
 
 				// System.out.println("intersection dobstacle");
 
-			}
-		}
+		//	}
+		//}
 
-		if (!creation) {
+		if (creation) {
 			// System.out.println("creation dun ennemi" + i);
 			for (int i = 0; i < nbDemon; i++) {
 				System.out.println("creationn");
 
-				Demon d = new Demon(px, py, 3 * (random.nextDouble() - 0.5),
-						3 * (random.nextDouble() - 0.5));
+				Demon d = new Demon(10, py, 1* (random.nextDouble() - 0.5),
+						1 * (random.nextDouble() - 0.5));
 
 				for (int j = 0; j < liste_obstacle.size(); j++) {
 					Intersect.collision(d, liste_obstacle.get(j));
@@ -266,12 +300,15 @@ public class Controller implements Initializable {
 				d.rateProperty().bind(slider.valueProperty().multiply(1 / 0.3));
 				demons.add(d);
 				sceneGame.getChildren().add(demons.getLast());
+				
+				
 
 			}
 
 		}
 
 		// System.out.println("nouvelle creation encore" + i);
+		
 
 		for (int i = 0; i < demons.size(); i++) {
 			demons.get(i).move();
@@ -285,12 +322,20 @@ public class Controller implements Initializable {
 				postelero.move();
 				postelero.shoot(liste_obstacle,demons);
 				nbballe_restante.set(postelero.nb_balle_restante.intValue());
+				 Intersect.collision(postelero.getList_balle(), demons,sceneGame);
+				for (int i = 0; i < demons.size(); i++) {
+					if(Intersect.collision(postelero, demons.getLast(),sceneGame)) {
+						mortjoueur.set(true);
+						
+					}
+					
+				}
 				
-
-				 Intersect.collision(postelero.getList_balle(), demons);
+				
+				
 				 
-				 System.out.println("nombre de deamon"+demons.size());
-				// Intersect.collision(demons, liste_obstacle);
+				//System.out.println("nombre de deamon"+demons.size());
+				
 
 			}
 		};

@@ -13,9 +13,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public class Pistolero extends Rectangle {
+public class Pistolero extends Circle {
 	private DoubleProperty vitesse = new SimpleDoubleProperty();
 
 	private double movex = 0;
@@ -58,16 +59,16 @@ public class Pistolero extends Rectangle {
 	}
 
 	public Pistolero(double x, double y, int nb_balle, URL urlImage) {
-		this.setWidth(50);
-		this.setHeight(50);
+		this.setRadius(30);
+		//this.setHeight(50);
 
 		X = x / 2;
 		Y = y / 1.5;
 
 		System.out.println(X);
 
-		this.setTranslateX(X);
-		this.setTranslateY(Y);
+		this.setCenterX(X);
+		this.setCenterY(Y);
 		nb_balle_autorise = nb_balle;
 
 		this.getStyleClass().add("pistolero");
@@ -132,16 +133,16 @@ public class Pistolero extends Rectangle {
 		X += movex;
 		Y += movey;
 
-		if (X + this.getWidth() <= ((Region) getParent()).getWidth() && X >= 0 && Y >= 0
-				&& Y + this.getHeight() <= ((Region) getParent()).getHeight()) {
+		if (X + this.getRadius() <= ((Region) getParent()).getWidth() && X >= 0 && Y >= 0
+				&& Y + this.getRadius() <= ((Region) getParent()).getHeight()) {
 
-			this.setTranslateX(X);
-			this.setTranslateY(Y);
+			this.setCenterX(X);
+			this.setCenterY(Y);
 			this.setRotate(rotate);
 		} else {
-			X = this.getTranslateX();
+			X = this.getCenterX();
 
-			Y = this.getTranslateY();
+			Y = this.getCenterY();
 
 		}
 	}
@@ -153,13 +154,14 @@ public class Pistolero extends Rectangle {
 
 		if (tire && nb_balle_autorise == 0) {
 			
-			Balle nouvelleBalle=new Balle(this.getx() + this.getWidth() / 2, this.gety());
+			Balle nouvelleBalle=new Balle(this.getx() + this.getRadius() / 2, this.gety());
 			for (int j = 0; j < p.size(); j++) {
+				
 				Intersect.collision(nouvelleBalle, p.get(j));
 
 			}
 		
-				//Intersect.collision(list_balle, d);
+				
 
 			
 			this.addBalle(nouvelleBalle);
@@ -175,7 +177,7 @@ public class Pistolero extends Rectangle {
 			
 		} else if (tire && nb_balle_autorise > 0 && nb_balle_restante.intValue() > 0) {
 			
-			Balle nouvelleBalle=new Balle(this.getx() + this.getWidth() / 2, this.gety());
+			Balle nouvelleBalle=new Balle(this.getx() + this.getRadius() / 2, this.gety());
 			this.addBalle(nouvelleBalle);
 			
 			for (int j = 0; j < p.size(); j++) {

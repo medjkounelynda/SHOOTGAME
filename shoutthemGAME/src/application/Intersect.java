@@ -10,6 +10,7 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
@@ -22,18 +23,23 @@ public class Intersect {
 		Timeline tl = new Timeline();
 		tl.setCycleCount(Animation.INDEFINITE);
 		KeyFrame moveBall = new KeyFrame(Duration.seconds(0.1), new EventHandler<ActionEvent>() {
+			int i = 0;
 
 			public void handle(ActionEvent event) {
 				Bounds bound_obstacle = p.getBoundsInParent();
 				if (list_balle.getBoundsInParent().intersects(bound_obstacle.getMinX(), bound_obstacle.getMinY(),
 						bound_obstacle.getMinZ(), bound_obstacle.getWidth(), bound_obstacle.getHeight(),
-						bound_obstacle.getDepth())) {
+						bound_obstacle.getDepth()) && i == 0) {
 
-					System.out.println("colision");
+					System.out.println("colision" + i++);
 
 					list_balle.setVitessey(-list_balle.getVitessey());
 					list_balle.setVitessex(list_balle.randomVitesse() * 5);
+					i++;
 					// list_balle.get(i).setCenterX(list_balle.get(i).getCenterX()+);
+				} else {
+					i = 0;
+					// System.out.println("pas colision");
 				}
 
 			}
@@ -44,78 +50,48 @@ public class Intersect {
 
 	public static void collision(Demon deamon, Obstacle p) {
 
-		/*
-		 * AnimationTimer timer = new AnimationTimer() { long collision = 0;
-		 * 
-		 * @Override public void handle(long now) {
-		 * 
-		 * // System.out.println(now);
-		 * 
-		 * Bounds bound_obstacle = p.getBoundsInParent();
-		 * 
-		 * 
-		 * 
-		 * if (deamon.getBoundsInParent().intersects(bound_obstacle.getMinX(),
-		 * bound_obstacle.getMinY(), bound_obstacle.getMinZ(),
-		 * bound_obstacle.getWidth(), bound_obstacle.getHeight(),
-		 * bound_obstacle.getDepth())) { if (collision == 0 ||(now-collision ) / 10000 >
-		 * 10) { System.out.println("collision" + ( now-collision) / 10000);
-		 * collision=1; Random random = new Random(System.nanoTime()); int t =
-		 * random.nextInt(3);
-		 * 
-		 * if (t == 0) { deamon.setVy(-deamon.getVy());
-		 * 
-		 * deamon.setVx(deamon.getVx()); } else if (t == 1) {
-		 * deamon.setVy(-deamon.getVy());
-		 * 
-		 * deamon.setVx(-deamon.getVx());
-		 * 
-		 * } else { deamon.setVy(deamon.getVy());
-		 * 
-		 * deamon.setVx(-deamon.getVx()); } collision = System.nanoTime();
-		 * //System.out.println("collision" + (collision - now) / 10000);
-		 * 
-		 * }
-		 * 
-		 * 
-		 * // timer.wait(100);
-		 * 
-		 * }
-		 * 
-		 * } };
-		 * 
-		 * timer.start();
-		 */
-
 		Timeline tl = new Timeline();
 		tl.setCycleCount(Animation.INDEFINITE);
 		KeyFrame intersectDeamonOB = new KeyFrame(Duration.seconds(0.1), new EventHandler<ActionEvent>() {
+			int i = 0;
 
 			public void handle(ActionEvent event) {
 				Bounds bound_obstacle = p.getBoundsInParent();
 
-				if (deamon.getBoundsInParent().intersects(bound_obstacle.getMinX(), bound_obstacle.getMinY(),
-						bound_obstacle.getMinZ(), bound_obstacle.getWidth(), bound_obstacle.getHeight(),
-						bound_obstacle.getDepth())) {
+				double dx = deamon.getCenterX() - p.getCenterX();
+				double dy = deamon.getCenterY() - p.getCenterY();
+				double distance = Math.sqrt(dx * dx + dy * dy);
+				double minDist = deamon.getRadius() + p.getRadius();
 
+				if (distance < minDist) {
+					//System.out.println("collision de deamon ");
 					Random random = new Random(System.nanoTime());
 					int t = random.nextInt(3);
-
+					i++;
 					if (t == 0) {
 						deamon.setVy(-deamon.getVy());
 
 						deamon.setVx(deamon.getVx());
+
 					} else if (t == 1) {
 						deamon.setVy(-deamon.getVy());
 
 						deamon.setVx(-deamon.getVx());
 
 					} else {
+						i = 0;
 						deamon.setVy(deamon.getVy());
 
 						deamon.setVx(-deamon.getVx());
-					}
 
+					}
+					deamon.setCenterX(deamon.getCenterX() + (minDist - distance));
+
+				} else {
+					// System.out.println("distance du
+					// obstacle"+p.getCenterX()+"yy"+p.getCenterY());
+				//	System.out.println("pas de collisionde deamon" + minDist + "  " + distance + "demon est x"
+						//	+ deamon.getCenterX() + " y " + deamon.getCenterY());
 				}
 
 			}
@@ -126,40 +102,51 @@ public class Intersect {
 
 	}
 
-	public static void collision(LinkedList<Balle> list_balle, LinkedList<Demon> p) {
-		 //boolean colision=false;
-		AnimationTimer timer = new AnimationTimer() {
+	public static boolean collision(Pistolero joueur, Demon p, Pane panel) {
 
-			@Override
-			public void handle(long now) {
-				for (int i = 0; i < list_balle.size(); i++) {
-					
-					for (int j = 0; j < p.size(); j++) {
-						
-						Bounds bound_obstacle = p.get(j).getBoundsInParent();
-						if (list_balle.get(i).getBoundsInParent().intersects(bound_obstacle.getMinX(), bound_obstacle.getMinY(),
-								bound_obstacle.getMinZ(), bound_obstacle.getWidth(), bound_obstacle.getHeight(),
-								bound_obstacle.getDepth())) {
+		double dx = p.getCenterX() - p.getCenterX();
+		double dy = joueur.getCenterY() - joueur.getCenterY();
+		double distance = Math.sqrt(dx * dx + dy * dy);
+		double minDist = joueur.getRadius() + p.getRadius();
 
-							
-							list_balle.remove(i);
-							p.remove(j);
-							System.out.println("reste"+p.size());
+		if (distance < minDist) {
+			//System.out.println("collision de deamon  joueur");
+			Random random = new Random(System.nanoTime());
+			return true;
+		} else {
+			return false;
+		}
 
-							// list_balle.get(i).setCenterX(list_balle.get(i).getCenterX()+);
-						}
-						
-						
-					}
-					
+	}
+
+	public static int collision(LinkedList<Balle> list_balle, LinkedList<Demon> p, Pane panel) {
+		// boolean colision=false;
+
+		for (int i = 0; i < list_balle.size(); i++) {
+
+			for (int j = 0; j < p.size(); j++) {
+
+				Bounds bound_obstacle = p.get(j).getBoundsInParent();
+				if (list_balle.get(i).getBoundsInParent().intersects(bound_obstacle.getMinX(), bound_obstacle.getMinY(),
+						bound_obstacle.getMinZ(), bound_obstacle.getWidth(), bound_obstacle.getHeight(),
+						bound_obstacle.getDepth())) {
+
+					panel.getChildren().remove(list_balle.get(i));
+					list_balle.remove(i);
+					panel.getChildren().remove(p.get(j));
+					p.remove(j);
+					return j;
+					// System.out.println("reste"+p.size());
+
+					// list_balle.get(i).setCenterX(list_balle.get(i).getCenterX()+);
 				}
 
-				
-
 			}
-		};
 
-		timer.start();
+		}
+
+		return 0;
+
 	}
 
 	public static double randomPosition(double positionMax) {
