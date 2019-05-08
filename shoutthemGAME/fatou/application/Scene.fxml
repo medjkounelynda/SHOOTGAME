@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import java.net.*?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.*?>
+
+
+
+
+<BorderPane  xmlns:fx="http://javafx.com/fxml/1"
+              fx:controller="Controller.Controller" onKeyPressed="#Direction" onKeyReleased="#Direction2" 
+>
+    <!-- TODO Add Nodes -->
+   
+    <stylesheets>
+        <URL value="@application.css" />
+    </stylesheets>
+    <top>
+        <VBox>
+            
+                <MenuBar>
+                    <Menu text="Partie">
+                        <MenuItem text="demarer"></MenuItem>
+                        <MenuItem text="pause"></MenuItem>
+				        
+                    </Menu>
+                    <Menu text="Fichier">
+                        <MenuItem text="sauvegarder"></MenuItem>
+                        <MenuItem text="restorer"></MenuItem>
+                        <MenuItem text="quitter"></MenuItem>
+                    </Menu>
+                </MenuBar>
+      
+                <HBox >
+                    <alignment>CENTER</alignment>
+                    <Label text="Demon restant:"/>
+                    <Label fx:id="lNbDemonR" />
+                    <Label text="Demon mort:"/>
+                    <Label fx:id="lNbDemonM" />
+                    <Label text="balle restant:"/>
+                    <Label fx:id="lNbBalle" />
+                </HBox>	
+ 
+        </VBox>
+       
+    </top>
+
+    <center>
+        <Pane styleClass="game-scene" fx:id="sceneGame" minWidth="800" prefWidth="600" prefHeight="600">
+	
+        </Pane>
+		
+    </center>
+    <left></left>
+    <bottom>
+        <HBox spacing="10"  prefWidth="600"     >
+        <TitledPane  text="vitesse joueur" alignment="CENTER_LEFT" prefWidth="300"   >
+            <Slider  fx:id="slider" min="2" max="8" value="0.3"></Slider>
+        </TitledPane>
+        <TitledPane  text="vitesse demon" prefWidth="300"  alignment="CENTER_RIGHT"  >
+            <Slider  fx:id="sliderDemon" min="2" max="8" value="0.3" ></Slider>
+        </TitledPane>
+        </HBox>
+    </bottom>
+</BorderPane>
+
+

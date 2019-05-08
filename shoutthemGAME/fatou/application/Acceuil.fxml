@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections ?>
+<?import java.lang.String?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.SpinnerValueFactory?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.image.*?>
+
+<GridPane hgap="6" vgap="7" id="GridPane" xmlns:fx="http://javafx.com/fxml" fx:id="configPane" fx:controller="Controller.AcceuilController" prefHeight="500.0" prefWidth="500.0">
+
+	<padding>
+		<Insets top="60" bottom="10" left="20" right="20" />
+	</padding>
+
+	<Text text="SHOOT THEM ALL">
+		<GridPane.rowIndex>0</GridPane.rowIndex>
+		<GridPane.columnIndex>4</GridPane.columnIndex>
+	</Text>
+
+	<Button fx:id="buttonTouche" text="OPTIONS DU JEU"
+		onAction="#option">
+		<GridPane.rowIndex>1</GridPane.rowIndex>
+		<GridPane.columnIndex>4</GridPane.columnIndex>
+	</Button>
+
+
+	<Text text="NOMBRE DE BALLES">
+		<GridPane.rowIndex>2</GridPane.rowIndex>
+		<GridPane.columnIndex>4</GridPane.columnIndex>
+	</Text>
+
+
+
+
+	<Spinner  fx:id="spinnerNbBalle" disable="true" editable="true">
+	<valueFactory>
+                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="1000" initialValue="0" amountToStepBy="1"/>
+            </valueFactory>
+	
+		<GridPane.rowIndex>3</GridPane.rowIndex>
+		<GridPane.columnIndex>4</GridPane.columnIndex>
+	</Spinner>
+	<CheckBox fx:id="balleInfini" text="Infinie" selected="true">
+
+		
+		<GridPane.rowIndex>3</GridPane.rowIndex>
+		<GridPane.columnIndex>5</GridPane.columnIndex>
+	</CheckBox >
+
+<Text text="ICONE DU JOUEUR	">
+		<GridPane.rowIndex>4</GridPane.rowIndex>
+		<GridPane.columnIndex>4</GridPane.columnIndex>
+	</Text>
+<ComboBox >
+
+
+
+		<items>
+			<FXCollections fx:factory="observableArrayList">	
+		
+			<ImageView fitWidth="40" fitHeight="40" >
+			<image>
+      <Image url="/media/shooter1.png"  />
+           </image>
+           
+			</ImageView>
+			
+			<ImageView fitWidth="40" fitHeight="40"  >
+			<image>
+      <Image url="/media/shooter2.png"  />
+           </image>
+           
+			</ImageView>	
+		
+
+			</FXCollections>
+		</items>
+		<GridPane.rowIndex>5</GridPane.rowIndex>
+		<GridPane.columnIndex>4</GridPane.columnIndex>
+	</ComboBox>
+	
+	<Button fx:id="buttonJouer" text="Jouer" onAction="#jouer">
+		<GridPane.rowIndex>6</GridPane.rowIndex>
+		<GridPane.columnIndex>4</GridPane.columnIndex>
+	</Button>
+
+	
+
+	
+
+</GridPane>
+
+
+	
