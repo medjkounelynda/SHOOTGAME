@@ -7,6 +7,7 @@ import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.IntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -88,7 +89,7 @@ public class Intersect {
                     deamon.setCenterX(deamon.getCenterX() + (minDist - distance));
 
                 } else {
-					// System.out.println("distance du
+                    // System.out.println("distance du
                     // obstacle"+p.getCenterX()+"yy"+p.getCenterY());
                     //	System.out.println("pas de collisionde deamon" + minDist + "  " + distance + "demon est x"
                     //	+ deamon.getCenterX() + " y " + deamon.getCenterY());
@@ -156,4 +157,109 @@ public class Intersect {
         return t;
     }
 
+    public static void collisionDemon( IntegerProperty td,LinkedList<Obstacle> lo,LinkedList<Demon> demons, Pane panel, Pistolero pis) {
+        Timeline tl = new Timeline();
+        tl.setCycleCount(Animation.INDEFINITE);
+        KeyFrame moveBall = new KeyFrame(Duration.seconds(0.1), new EventHandler<ActionEvent>() {
+            int i = 0;
+
+            public void handle(ActionEvent event) {
+                for (int i = 0; i < demons.size(); i++) {
+                    for (int j = i + 1; j < demons.size(); j++) {
+                        
+                        Bounds boundi = demons.get(i).getBoundsInParent();
+                        if (demons.get(i).getBoundsInParent().intersects(demons.get(j).getBoundsInParent())
+                                ) {
+                            if (demons.get(i).isMale(demons.get(j))) {
+                                System.out.println("je suis dans collision de male");
+                                ThreadBebe b = new ThreadBebe(demons.get(i),demons.get(j));
+                                    b.start();
+                                    panel.getChildren().remove(demons.get(j));
+                                    demons.remove(demons.get(j));
+                                    System.out.println("je suis dans collision de male");
+                                
+                            }else if(demons.get(i).isCouple(demons.get(j))){
+                                 System.out.println("je suis dans collision de couple");
+                                    if(demons.size()<10){
+                                    Demon d= demons.get(i).naissance(demons.get(j));
+                                     ThreadNaissance tn = new ThreadNaissance(d);
+                                    tn.start();
+                                 td.set(td.get()+1);
+                                    demons.add(d);
+                                    panel.getChildren().add(d);
+                                    
+                                    
+                                   
+                                //d.move();
+                                    } 
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+            );
+        tl.getKeyFrames ()
+
+            .add(moveBall);
+        tl.play ();
+        }
+        /* if (d1.getBoundsInParent().intersects(d2.getBoundsInParent())){
+         System.out.println("collision fatou");
+        
+         d1.setIcone("/media/feu.png");
+         d2.setIcone("/media/feu.png");
+
+         if ((d1.getType ()== Sexe.male && d2.getType() == Sexe.femelle) || (d1.getType() == Sexe.femelle && d2.getType() == Sexe.male)) {
+         Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), e -> naissance(this, d, ld, panel)));
+         tl.play();
+
+         } else {
+         if (this.type == Sexe.male && d.type == Sexe.male) {
+                
+         Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), e -> saigner(this, d, ld, panel)));
+         tl.play();
+         //tuer un demon
+         }else{
+         Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), e -> retabOrdre(this, d)));
+         tl.play();
+                
+         }
+         }
+         }
+         }
+
+         private void saigner(Demon d1, Demon d2, LinkedList<Demon> ld, Pane panel) {
+         d1.setIcone("/media/demonMale.png");
+         panel.getChildren().remove(d2);
+         ld.remove(d2);
+
+         }*/
+
+    private static void retabOrdre(Demon d1, Demon d2) {
+
+        d1.setIcone("/media/demonfemelle.png");
+
+        d2.setIcone("/media/demonFemelle.png");
+
+    }
+    
+     /*public  static void naissance(Demon d1, Demon d2, LinkedList<Demon> ld, Pane panel){
+         Demon d = 
+     
+     
+     Demon nouv = new Demon(d1.getCenterX(), d1.getCenterY(), d1.getVx(), d1.getVy());
+     nouv.move();
+     nouv.collisionDemon(d2, ld, panel);
+     nouv.setIcone("/media/demonBebe.png");
+     ld.add(nouv);
+     panel.getChildren().add(nouv);
+       
+        
+     }   */
+public   static void  dddd( LinkedList<Obstacle> lo ,LinkedList<Demon> de ,Pane scen,Pistolero post,int nbDem){
+    ThreadCreateDemon tcd = new ThreadCreateDemon(lo,de, scen,post, nbDem);
+    tcd.start();
+}
 }

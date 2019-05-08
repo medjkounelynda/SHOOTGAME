@@ -12,6 +12,7 @@ package application;
  */
 public enum Sexe {
     male,
-    femelle;
+    femelle,
+    bebe;
     
 }

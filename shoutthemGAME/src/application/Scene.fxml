@@ -56,7 +56,7 @@
     </top>
 
     <center>
-        <Pane styleClass="game-scene" fx:id="sceneGame" minWidth="800" prefWidth="800" prefHeight="600">
+        <Pane styleClass="game-scene" fx:id="sceneGame" minWidth="800" prefWidth="600" prefHeight="600">
 	
         </Pane>
 		

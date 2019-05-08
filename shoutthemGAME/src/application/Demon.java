@@ -6,6 +6,8 @@
 package application;
 
 /**
+ * 
+ * 
  *
  * @author netbook
  */
@@ -23,8 +25,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
@@ -36,18 +40,22 @@ public class Demon extends Circle {
     DoubleProperty vx = new SimpleDoubleProperty();
     DoubleProperty vy = new SimpleDoubleProperty();
     DoubleProperty rate = new SimpleDoubleProperty();
-
+   public boolean bebe;
+   ImageView image;
     private Sexe type;
 
     public Demon(double x, double y, double vx, double vy) {
       
             rate.set(1);
             Random r = new Random(System.nanoTime());
-            
+            bebe = false;
             URL url;
             int rr = r.nextInt(10);
+            this.setStroke(Color.BLUE);
             // System.out.println("random = "+rr);
-            if (rr % 2 == 0) {
+           
+            this.type = Sexe.femelle;
+           if (rr % 2 == 0) {
                 this.type = Sexe.femelle;
                 url = getClass().getResource("/media/demonFemelle.png");
             } else {
@@ -57,18 +65,66 @@ public class Demon extends Circle {
             this.vx.set(vx);
             this.vy.set(vy);
             
+            
             this.setRadius(radius);
             
             this.setCenterX(x);
             this.setCenterY(x);
             
-            Image cat = new Image(url.toString());
+            Image cat = new Image(url.toString(),false);
             //cat.widthProperty().s
             this.setFill(new ImagePattern(cat));
-        
+           
+            
+            
 
     }
+    
+    public Demon(double x, double y, double vx, double vy, Sexe s) {
+      
+            rate.set(1);
+            Random r = new Random(System.nanoTime());
+            bebe = true;
+            URL url;
+            int rr = r.nextInt(10);
+            this.setStroke(Color.BLUE);
+            // System.out.println("random = "+rr);
+           
+            this.type = s;
+           if (this.type ==Sexe.femelle) {
+               
+                url = getClass().getResource("/media/demonFemelle.png");
+            } else if (this.type ==Sexe.male) {
+               
+                url = getClass().getResource("/media/demonMale.png");
+            }else{
+               
+                url = getClass().getResource("/media/demonBebe.png");
+            }
+           
+            this.vx.set(vx);
+            this.vy.set(vy);
+            
+            
+            this.setRadius(radius);
+            
+            this.setCenterX(x);
+            this.setCenterY(x);
+            
+            Image cat = new Image(url.toString(),false);
+            //cat.widthProperty().s
+            this.setFill(new ImagePattern(cat));
+           
+            
+            
 
+    }
+    public Sexe getType(){
+        return type;
+    }
+    public void setType(Sexe s){
+        this.type= s;
+    }
     public DoubleProperty vxProperty() {
         return vx;
     }
@@ -108,12 +164,13 @@ public class Demon extends Circle {
 
     public void move() {
 
-        Timeline tl = new Timeline();
+      /* Timeline tl = new Timeline();
         tl.setCycleCount(Animation.INDEFINITE);
         KeyFrame moveBall = new KeyFrame(Duration.seconds(0.1),
                 new EventHandler<ActionEvent>() {
 
                     public void handle(ActionEvent event) {
+                        
                         /* delta -- la valeur absolue de deplacement */
                         double delta = 2.7 * getRate();
                         /* deplacer le centre de la particule */
@@ -141,78 +198,20 @@ public class Demon extends Circle {
                             setVy(-getVy());
                         }
 
-                    }
-                });
+                  /*  }
+               });
         tl.getKeyFrames().add(moveBall);
-        tl.play();
+        tl.play();*/
 
     }
 
-    public Sexe getType() {
-        return type;
-    }
 
     public static double randomDemon(Pane pane) {
         Random random = new Random(System.nanoTime());
        return random.nextDouble() * (pane.getPrefWidth() - Demon.radius * 2);
     }
 
-    public void collisionDemon(Demon d, LinkedList<Demon> ld, Pane panel) {
-        if(this.intersects(d.getBoundsInLocal())){
-            System.out.println("je suis fatou");
-        
-        this.setIcone("/media/feu.png");
-        d.setIcone("/media/feu.png");
-
-        if ((this.type == Sexe.male && d.type == Sexe.femelle) || (this.type == Sexe.femelle && d.type == Sexe.male)) {
-           Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), e -> naissance(this, d, ld, panel)));
-                tl.play();
-
-        } else {
-            if (this.type == Sexe.male && d.type == Sexe.male) {
-                
-                Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), e -> saigner(this, d, ld, panel)));
-                tl.play();
-                //tuer un demon
-            }else{
-                 Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), e -> retabOrdre(this, d)));
-                tl.play();
-                
-            }
-        }
-        }
-    }
-
-    private void saigner(Demon d1, Demon d2, LinkedList<Demon> ld, Pane panel) {
-        d1.setIcone("/media/demonMale.png");
-        panel.getChildren().remove(d2);
-        ld.remove(d2);
-
-    }
-    private void retabOrdre(Demon d1, Demon d2){
-        
-            d1.setIcone("/media/demonfemelle.png");
-       
-             d2.setIcone("/media/demonFemelle.png");
-        
-    }
-    private void naissance(Demon d1, Demon d2, LinkedList<Demon> ld, Pane panel){
-         String s1 = d1.getType()==Sexe.male ? "/media/demonMale.png":"/media/demonFemelle.png";
-        String s2 = d2.getType()==Sexe.male ? "/media/demonMale.png":"/media/demonFemelle.png";
-        System.out.println(s1+" s2: "+s2);
-        d1.setIcone(s1);
-        d2.setIcone(s2);
-        Demon nouv = new Demon(d1.getCenterX(), d1.getCenterY(), d1.getVx(), d1.getVy());
-        nouv.move();
-        nouv.collisionDemon(d2, ld, panel);
-        nouv.setIcone("/media/demonBebe.png");
-        ld.add(nouv);
-        panel.getChildren().add(nouv);
-       
-        
-       
-        
-    }
+    
     
 
     public void setIcone(String chemin) {
@@ -220,4 +219,82 @@ public class Demon extends Circle {
         Image cat = new Image(url.toString());
         this.setFill(new ImagePattern(cat));
     }
+    
+    
+ public static Demon  createDemon(LinkedList<Obstacle> liste_obstacle ,LinkedList<Demon> demons , Pistolero postelero ,Pane sceneGame) {
+
+        double px, py, vx, vy;
+
+        Random random;
+        Demon d=null;
+        boolean creation = true;
+         do{
+            random = new Random(System.nanoTime());
+            px = random.nextDouble() * (sceneGame.getPrefWidth() - Demon.radius * 2) + Demon.radius;
+            py = random.nextDouble() * (sceneGame.getPrefHeight() - Demon.radius * 2) + Demon.radius;
+            vx = 2 * (random.nextDouble() - 0.5);
+            vy = 2 * (random.nextDouble() - 0.5);
+            System.out.println("px " + px + " py " + py + " vx" + vx + " vy " + vy);
+            Demon demon = new Demon(px, py, vx, vy);
+            
+            if (!demon.getBoundsInParent().intersects(postelero.getBoundsInParent())) {
+                System.out.println(" pas obstacle pistelero");
+                for (int j = 0; j < liste_obstacle.size(); j++) {
+                    if (liste_obstacle.get(j).getBoundsInParent().intersects(demon.getBoundsInParent())) {
+                        j = liste_obstacle.size();
+                        System.out.println("change" + creation );
+                        creation = false;
+                    } else {
+                        // System.out.println("intersection dobstacle");
+                        creation = true;
+                    }
+
+                }//fin collision obstacle
+                /*if(creation){
+                    //collision demon
+                    for (int j = 0; j < demons.size(); j++) {
+                        if (demons.get(j).getBoundsInParent().intersects(demon.getBoundsInParent())) {
+                            j = demons.size();
+                             System.out.println("collision demon");
+                            creation = false;
+                        } else {
+                            // System.out.println("intersection dobstacle");
+                            creation = true;
+                        }
+                    
+                    }
+                }*/
+
+            } else {
+              //collision ave cpistolero
+                // System.out.println("change pistolero"+creation+i);
+                creation = false;
+            }
+
+            if (creation) {
+                /*demons.add(demon);
+                sceneGame.getChildren().add(demon);*/
+                d= demon;
+
+            }
+
+        }while (d==null);
+         //d.move();
+         return d;
+    }
+ public boolean isMale( Demon d2){
+     return (this.type ==Sexe.male && d2.type ==Sexe.male);
+ }
+public boolean  isCouple(Demon d){
+    return this.type.equals(d.type);
+           
+}
+public boolean isFemlelle( Demon d2){
+     return (this.type ==Sexe.femelle && d2.type ==Sexe.femelle);
+ }
+public Demon naissance(Demon d){
+    Demon d2= new Demon(d.getBoundsInParent().getMinX(),
+            d.getBoundsInParent().getMinY(), (d.getVx()-this.getVx()), (d.getVy()-this.getVy()), Sexe.bebe);
+    return d2;
+}
 }

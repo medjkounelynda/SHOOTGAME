@@ -13,11 +13,18 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.ResourceBundle;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -25,6 +32,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
+import application.*;
 
 /**
  * FXML Controller class
@@ -35,13 +44,17 @@ public class Controller implements Initializable {
 
     @FXML
     private Pane sceneGame;
-   
+
     @FXML
     Slider slider;
-    @FXML Slider sliderDemon;
-    @FXML Label lNbDemonR;
-    @FXML Label lNbDemonM;
-    @FXML Label lNbBalle;
+    @FXML
+    Slider sliderDemon;
+    @FXML
+    Label lNbDemonR;
+    @FXML
+    Label lNbDemonM;
+    @FXML
+    Label lNbBalle;
     private int nbBalle = 0;
     private int nbDemon = 5;
     private int nbObstacle = 5;
@@ -55,6 +68,19 @@ public class Controller implements Initializable {
     private KeyCode tire;
 
     private IntegerProperty nbballe_restante = new SimpleIntegerProperty();
+    private IntegerProperty demonTotal = new SimpleIntegerProperty();
+
+    public IntegerProperty demonTotalProperty() {
+        return demonTotal;
+    }
+
+    public void setDemonTotal(int d) {
+        this.demonTotal.set(d);
+    }
+
+    public int getDemonTotal() {
+        return demonTotal.intValue();
+    }
     private IntegerProperty ndemon_restant = new SimpleIntegerProperty();
     BooleanProperty mortjoueur = new SimpleBooleanProperty(false);
     private URL urlImagePist;
@@ -92,8 +118,8 @@ public class Controller implements Initializable {
 
         this.nbBalle = nbballe;
         postelero.setNb_balle_autorise(nbBalle);
-        this.lNbBalle.setText(nbBalle +"");
-        System.out.println("nbballe :"+ this.nbBalle);
+        this.lNbBalle.setText(nbBalle + "");
+        System.out.println("nbballe :" + this.nbBalle);
     }
 
     public KeyCode getUp() {
@@ -198,45 +224,67 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        // TODO
-        
-        
+
+        // TODOis.
+        this.demonTotal.set(nbDemon);
         Random random = new Random(System.nanoTime());
         postelero = new Pistolero(sceneGame.getPrefWidth(), sceneGame.getPrefHeight(), nbBalle, urlImagePist);
-        System.out.println("fatout "+nbBalle);
-        this.lNbBalle.setText(10 +"");
-        this.lNbDemonR.setText(this.nbDemon+"");
-        this.lNbDemonM.setText(0+"");
-        
+        System.out.println("fatout " + nbBalle);
+        this.lNbBalle.setText(10 + "");
+        this.lNbDemonR.setText(this.getDemonTotal() + "");
+        this.lNbDemonM.setText(0 + "");
+
         sceneGame.getChildren().add(postelero);
 
         postelero.getVitesse().bind(slider.valueProperty().multiply(1 / 0.3));
-        
+
         // -----------------------------------------------ajout
         // obstacle----------------------------------------------
         creationObstacle();
-        // creation de demons
+
+        ///creation de demon ________________//
         creationDemon();
-		// System.out.println("nouvelle creation encore" + i);
+        /* ThreadCreateDemon tcd = new ThreadCreateDemon(liste_obstacle,demons, sceneGame,postelero, nbDemon);
+         tcd.start();*/
+
+        Timeline tl = new Timeline();
+        tl.setCycleCount(Animation.INDEFINITE);
+        KeyFrame moveBall = new KeyFrame(Duration.seconds(0.1),
+                new EventHandler<ActionEvent>() {
+
+                    public void handle(ActionEvent event) {
+                        for (int k = 0; k < demons.size(); k++) {
+                            demons.get(k).move();
+                            
+                        }
+                    }
+                });
+        tl.getKeyFrames().add(moveBall);
+        tl.play();
         for (int k = 0; k < demons.size(); k++) {
+
+            demons.get(k).rateProperty().bind(sliderDemon.valueProperty().multiply(1 / 0.3));
+        }
+        // System.out.println("nouvelle creation encore" + i);
+       /*for (int k = 0; k < demons.size(); k++) {
          demons.get(k).move();
-         for (Demon d: demons){
-            if(demons.indexOf(d)!=k)
-                demons.get(k).collisionDemon(d, demons, sceneGame);    
-         }
-         }
+         }*/
+        Intersect.collisionDemon(demonTotal, liste_obstacle, demons, sceneGame, postelero);
         AnimationTimer timer = new AnimationTimer() {
 
             @Override
             public void handle(long now) {
-
+                /*for (int k = 0; k < demons.size(); k++) {
+                 demons.get(k).move();
+                 }*/
                 postelero.move();
                 postelero.shoot(liste_obstacle, demons);
+
                 nbballe_restante.set(postelero.nb_balle_restante.intValue());
-               change();
+                change();
                 Intersect.collision(postelero.getList_balle(), demons, sceneGame);
                 for (int i = 0; i < demons.size(); i++) {
+
                     if (Intersect.collision(postelero, demons.getLast(), sceneGame)) {
                         mortjoueur.set(true);
 
@@ -251,12 +299,14 @@ public class Controller implements Initializable {
         timer.start();
 
     }
-    void change(){
-         this.lNbBalle.setText(this.nbballe_restante.intValue()+"");
-         this.lNbDemonR.setText(demons.size()+"");
-         this.lNbDemonM.setText(nbDemon-this.demons.size()+"");
- 
-    }    
+
+    void change() {
+        this.lNbBalle.setText(this.nbballe_restante.intValue() + "");
+        this.lNbDemonR.setText(demons.size() + "");
+        this.lNbDemonM.setText(this.getDemonTotal() - this.demons.size() + "");
+
+    }
+
     void creationObstacle() {
         boolean creation = true;
         for (int i = 0; i < nbObstacle; i++) {
@@ -294,77 +344,54 @@ public class Controller implements Initializable {
     }
 
     void creationDemon() {
+        for (int i = 0; i < nbDemon; i++) {
+            Demon d = Demon.createDemon(liste_obstacle, demons, postelero, sceneGame);
+            demons.add(d);
+            sceneGame.getChildren().add(d);
+        }
 
-       
-        double px, py, vx, vy;
-        int change = 0;
-        int i = 0, j = 0;
-        Random random;
-        do {
-            random = new Random(System.nanoTime());
-            px = random.nextDouble() * (sceneGame.getPrefWidth() - Demon.radius * 2)
-                    + Demon.radius;
-            py = random.nextDouble() * (sceneGame.getPrefHeight() - Demon.radius * 2)
-                    + Demon.radius;
-            vx = 8 * (random.nextDouble() - 0.5);
-            vy = 8 * (random.nextDouble() - 0.5);
-            System.out.println("px " + px + " py " + py + " vx" + vx + " vy " + vy);
-            Demon d = new Demon(px, py, vx, vy);
-            if (!d.getBoundsInParent().intersects(postelero.getBoundsInParent())) {
-                System.out.println("pas de collision avec pistelero");
-                j = 0;
-                change = 0;
-                do {
-                    if (liste_obstacle.get(j).getBoundsInParent().intersects(d.getBoundsInParent())) {
-                        j = liste_obstacle.size();
-                       
-                        change++;
-                        
-                    } else {
-                        change = 0;
-                        j++;
-                    }
-                } while (j < liste_obstacle.size());
-                // test colision entre demon.println(
-                System.out.println("change : " + change + "appres obstacle");
-                if (change == 0) {
-                    j = 0;
+        /* double px, py, vx, vy;
 
-                    while (j < demons.size()) {
-                        if (demons.get(j).getBoundsInParent().intersects(d.getBoundsInParent())) {
-                            j = demons.size();
-                            
-                            change++;
-                        } else {
-                            change = 0;
-                            j++;
-                        }
-                    } 
-                   
-                }
-            } else {
-               
-                // System.out.println("change pistolero"+creation+i);
-                change++;
-            }
+         Random random;
 
-            if (change == 0) {
-                //collision de demon et obsacle
-                for (int k = 0; k < liste_obstacle.size(); k++) {
-                    Intersect.collision(d, liste_obstacle.get(k));
-                }
-                    d.rateProperty().bind(sliderDemon.valueProperty().multiply(1 / 0.3));
-				
-                System.out.println("d " + d.getCenterX() + " cy " + d.getCenterY());
-                d.rateProperty().bind(slider.valueProperty().multiply(1 / 0.3));
-     
-                demons.add(d);
-                sceneGame.getChildren().add(demons.getLast());
-                //change = 0;
-                i++;
-            }
+         boolean creation = true;
+         for (int i = 0; i < nbObstacle; i++) {
+         random = new Random(System.nanoTime());
+         px = random.nextDouble() * (sceneGame.getPrefWidth() - Demon.radius * 2) + Demon.radius;
+         py = random.nextDouble() * (sceneGame.getPrefHeight() - Demon.radius * 2) + Demon.radius;
+         vx = 2 * (random.nextDouble() - 0.5);
+         vy = 2 * (random.nextDouble() - 0.5);
+         System.out.println("px " + px + " py " + py + " vx" + vx + " vy " + vy);
+         Demon demon = new Demon(px, py, vx, vy);
+            
+         if (!demon.getBoundsInParent().intersects(postelero.getBoundsInParent())) {
+         System.out.println("obstacle pistelero");
+         for (int j = 0; j < liste_obstacle.size(); j++) {
+         if (liste_obstacle.get(j).getBoundsInParent().intersects(demon.getBoundsInParent())) {
+         j = liste_obstacle.size();
+         i = i - 1;
+         // System.out.println("change" + creation + i);
+         creation = false;
+         } else {
+         // System.out.println("intersection dobstacle");
+         creation = true;
+         }
 
-        } while (i < nbDemon);
+         }
 
+         } else {
+         i = i - 1;
+         // System.out.println("change pistolero"+creation+i);
+         creation = false;
+         }
+
+         if (creation) {
+         demons.add(demon);
+         sceneGame.getChildren().add(demon);
+
+         }
+
+         }*/
     }
+
 }
